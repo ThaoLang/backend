@@ -1,0 +1,41 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Job {
+  id              String   @id @default(uuid())
+  learningRate    Float
+  epoch           Int
+  batchSize       Int
+  currentEpoch    Int      @default(0)
+  currentAccuracy Float    @default(0)
+  currentLoss     Float    @default(0)
+  status          String   // "PENDING" | "RUNNING" | "SUCCEEDED" | "FAILED"
+  accuracy        Float?
+  loss            Float?
+  duration        Int?     
+  createdAt       DateTime @default(now())
+  progress        Int      @default(0)
+
+  finalAccuracy   Float?   
+  finalLoss       Float?   
+  endAt           DateTime? 
+  startAt         DateTime?
+  logs            Log[]    
+}
+
+model Log {
+  id        String   @id @default(uuid())
+  jobId     String
+  epoch     Int
+  trainLoss Float
+  valLoss   Float
+  accuracy  Float
+  time      Float
+  Job       Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+}
