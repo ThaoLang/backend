@@ -143,7 +143,7 @@ exports.deleteJob = async (req, res) => {
 exports.getJobSummary = async (req, res) => {
   try {
     const [runningCount, successCount, failedCount, best] = await Promise.all([
-      prisma.job.count({ where: { status: "RUNNING" } }),
+      prisma.job.count({ where: { status: { in: ["RUNNING", "PENDING"] } } }),
       prisma.job.count({ where: { status: "SUCCEEDED" } }),
       prisma.job.count({ where: { status: "FAILED" } }),
       prisma.job.findFirst({
